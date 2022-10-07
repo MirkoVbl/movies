@@ -1,19 +1,20 @@
-name: Deploy to Heroku
+name: Deploy on Heroku
 on:
   push:
     branches:
-      - main
+      - feature
+      - master
 
 jobs:
   build-frontend:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3 #??
+      - uses: actions/setup-node@v2 #??
         with:
           node-version: '14'
       - name: Build Frontend
-        run: |
+        run: | #??
           cd frontend
           npm install
           npm run build
@@ -46,10 +47,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-backend
     environment:
-      name: Insane Movie DB Deployed
-      url: https://insane-movie-db.herokuapp.com/
+      name: Krasse Movies
+      url: "https://krasse-movies.herokuapp.com/"
     env:
-      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }} #currywurst?
     steps:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v2
@@ -58,8 +59,8 @@ jobs:
           path: backend/target
       - name: Login to Heroku
         run: heroku container:login
-      - name: Push Docker Image
+      - name: Push App
         run: heroku container:push web -a krasse-movies
-      - name: Release Docker Container
+      - name: Release App
         run: heroku container:release web -a krasse-movies
 
